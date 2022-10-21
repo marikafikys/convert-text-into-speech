@@ -1,6 +1,9 @@
 let textarea = document.querySelector('#text');
 let voiceList = document.querySelector('#voice');
 let speechButton = document.querySelector('.submit');
+let wrapper = document.querySelector('.main');
+let volume = document.querySelector('.volume');
+let rate = document.querySelector('.rate');
 
 let synth = speechSynthesis;
 let isSpeaking = true;
@@ -10,7 +13,7 @@ function voiceSpeech() {
 		let option = document.createElement('option');
 		option.text = voice.name;
 		voiceList.add(option);
-		console.log(option);
+		// console.log(option);
 	}
 }
 
@@ -21,9 +24,20 @@ function textToSpeech(text) {
 	for (let voice of synth.getVoices()) {
 		if (voice.name === voiceList.value) {
 			utterance.voice = voice;
+			utterance.volume = volume.value;
+			utterance.rate = rate.value;
 		}
 	}
 	speechSynthesis.speak(utterance);
+}
+
+wrapper.onchange = ({ target }) => {
+	if (target.type !== "range") return;
+	handleChange(target);
+};
+
+function handleChange(el) {
+	el.nextElementSibling.textContent = el.value;
 }
 
 speechButton.addEventListener('click', (e) => {
@@ -40,6 +54,7 @@ speechButton.addEventListener('click', (e) => {
 			} else {
 				synth.pause();
 				isSpeaking = true;
+				
 				speechButton.innerHTML = 'Resume speech';
 			}
 			setInterval(() => {
